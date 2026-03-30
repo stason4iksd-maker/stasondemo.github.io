@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Орден Бездны</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a001a 0%, #1a0033 50%, #0a001a 100%);
+            position: relative;
+        }
+        
+        /* Центральный фокус для направления падения */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at center 40%, rgba(80, 0, 120, 0.15) 0%, transparent 70%),
+                radial-gradient(circle at 60% 70%, rgba(40, 0, 80, 0.1) 0%, transparent 60%);
+            z-index: 1;
+        }
+        
+        .center-point {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.1);
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(10, 0, 25, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(120, 80, 220, 0.3);
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #B19CD9, #8A2BE2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(177, 156, 217, 0.3);
+            letter-spacing: 1px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tab {
+            padding: 10px 24px;
+            background: transparent;
+            border: 1px solid rgba(140, 100, 255, 0.3);
+            color: #B0A0FF;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .tab:hover {
+            background: rgba(140, 100, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .tab.active {
+            background: linear-gradient(to bottom, #4B0082, #2D004D);
+            color: white;
+            border-color: rgba(140, 100, 255, 0.6);
+            box-shadow: 0 0 15px rgba(75, 0, 130, 0.4);
+        }
+        
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+        
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .star-small {
+            width: 1px;
+            height: 1px;
+        }
+        
+        .star-medium {
+            width: 2px;
+            height: 2px;
+        }
+        
+        .star-large {
+            width: 3px;
+            height: 3px;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 10;
+            margin-top: 100px;
+            padding: 40px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .order-name {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(150, 100, 255, 0.7);
+            background: linear-gradient(to right, #B19CD9, #8A2BE2, #4B0082);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 2px;
+            line-height: 1.2;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: revealText 1.5s ease forwards 0.5s;
+        }
+        
+        @keyframes revealText {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .order-description {
+            background-color: rgba(15, 0, 30, 0.75);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(120, 80, 220, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            line-height: 1.7;
+            font-size: 1.2rem;
+            color: #D0C8FF;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: revealText 1.5s ease forwards 1s;
+        }
+        
+        .members-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+        
+        .member-card {
+            background: rgba(20, 0, 40, 0.7);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(120, 80, 220, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(120, 80, 220, 0.5);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .member-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #8A2BE2;
+        }
+        
+        .member-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #B0A0FF;
+        }
+        
+        .member-role {
+            color: #8A7FD6;
+            font-size: 0.95rem;
+        }
+        
+        .codex-content {
+            background-color: rgba(15, 0, 30, 0.75);
+            border-radius: 15px;
+            padding: 40px;
+            border: 1px solid rgba(120, 80, 220, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            line-height: 1.7;
+            font-size: 1.2rem;
+            color: #D0C8FF;
+        }
+        
+        .codex-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #B19CD9;
+            text-shadow: 0 0 10px rgba(177, 156, 217, 0.5);
+        }
+        
+        .codex-intro {
+            font-size: 1.3rem;
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(30, 0, 60, 0.3);
+            border-radius: 10px;
+            border-left: 4px solid #8A2BE2;
+        }
+        
+        .persona-definition {
+            background: rgba(40, 0, 80, 0.4);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(140, 100, 255, 0.2);
+        }
+        
+        .persona-item {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .persona-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #8A2BE2;
+            font-size: 1.5rem;
+        }
+        
+        .persona-term {
+            color: #B0A0FF;
+            font-weight: 600;
+        }
+        
+        .codex-rule {
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            background: rgba(20, 0, 40, 0.5);
+            border-left: 4px solid #4B0082;
+            transition: all 0.3s ease;
+        }
+        
+        .codex-rule:hover {
+            background: rgba(25, 0, 50, 0.6);
+            transform: translateX(5px);
+        }
+        
+        .rule-number {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(to bottom, #4B0082, #2D004D);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 36px;
+            margin-right: 15px;
+            font-weight: 700;
+            color: white;
+            vertical-align: middle;
+        }
+        
+        .rule-text {
+            display: inline-block;
+            width: calc(100% - 60px);
+            vertical-align: top;
+        }
+        
+        .sub-rule {
+            margin-top: 15px;
+            margin-left: 40px;
+            padding: 15px;
+            background: rgba(30, 0, 60, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid #8A2BE2;
+        }
+        
+        .sub-rule-number {
+            color: #B0A0FF;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .highlight {
+            color: #FF6B9D;
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(255, 107, 157, 0.3);
+        }
+        
+        .image-container {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(20, 0, 40, 0.5);
+            border-radius: 15px;
+            border: 1px solid rgba(120, 80, 220, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .main-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid rgba(140, 100, 255, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .main-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 35px rgba(100, 50, 255, 0.3);
+        }
+        
+        .image-loading {
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            margin: 0 auto;
+            background: linear-gradient(45deg, rgba(40, 0, 80, 0.7), rgba(75, 0, 130, 0.7));
+            border-radius: 10px;
+            border: 2px dashed rgba(140, 100, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #B0A0FF;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .tab {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .content {
+                padding: 20px;
+                margin-top: 120px;
+            }
+            
+            .order-name {
+                font-size: 2.5rem;
+            }
+            
+            .order-description, .codex-content {
+                padding: 25px;
+                font-size: 1.1rem;
+            }
+            
+            .members-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .persona-definition, .codex-rule {
+                padding: 15px;
+            }
+            
+            .rule-text {
+                width: calc(100% - 50px);
+            }
+            
+            .sub-rule {
+                margin-left: 20px;
+                padding: 10px;
+            }
+            
+            .image-loading {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="center-point"></div>
+    <div class="stars-container" id="starsContainer"></div>
+    
+    <div class="header">
+        <div class="logo">ОРДЕН БЕЗДНЫ</div>
+        <div class="nav-tabs">
+            <button class="tab active" data-tab="main">Главная</button>
+            <button class="tab" data-tab="codex">Кодекс</button>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="tab-content active" id="main-content">
+            <h1 class="order-name">ОРДЕН БЕЗДНЫ</h1>
+            
+            <div class="order-description">
+                <p>Орден Бездны представляет собой группу, состоящую как минимум из четырех человек. Основной целью данного ордена является защита прав и идей игроков, а также их частной собственности в соответствии с установленным кодексом.</p>
+            </div>
+            
+            <div class="members-section">
+                <!-- Место для информации об участниках -->
+            </div>
+            
+            <!-- Контейнер для картинки с числами -->
+            <div class="image-container">
+                <!-- Картинка с числами от 1 до 10 -->
+                <img src="https://i.ibb.co/NndjsYJQ/Untitlvnvned.png" 
+                     alt="Числа от 1 до 10" 
+                     class="main-image"
+                     id="numbersImage"
+                     onerror="handleImageError()">
+            </div>
+        </div>
+        
+        <div class="tab-content" id="codex-content">
+            <h2 class="codex-title">КОДЕКС ОРДЕНА БЕЗДНЫ</h2>
+            
+            <div class="codex-content">
+                <div class="codex-intro">
+                    Каждый участник Ордена Бездны обязан строго придерживаться кодекса, изложенного ниже:
+                </div>
+                
+                <div class="persona-definition">
+                    <h3 style="color: #B0A0FF; margin-bottom: 20px; text-align: center;">Определение сторон:</h3>
+                    <div class="persona-item">
+                        <span class="persona-term">Первая особа:</span> я (потерпевшая сторона/владелец)
+                    </div>
+                    <div class="persona-item">
+                        <span class="persona-term">Вторая особа:</span> он/она/они (нарушитель/ответственная сторона)
+                    </div>
+                    <div class="persona-item">
+                        <span class="persona-term">Третья особа:</span> он/она/они (при условии что они не участники самого нарушения)
+                    </div>
+                </div>
+                
+                <div class="codex-rule">
+                    <span class="rule-number">1</span>
+                    <div class="rule-text">
+                        Проявляйте уважение ко всем без исключений; не ведите себя вызывающе по отношению к человеку, которого вы ненавидите, независимо от его поступка.
+                    </div>
+                </div>
+                
+                <div class="codex-rule">
+                    <span class="rule-number">2</span>
+                    <div class="rule-text">
+                        В случае нападения на первую особу она имеет право на убийство и на передачу 70% всего имущества второй особы; если вторая особа не согласна с решением первой, она может оспорить изъятие имущества у любой <span class="highlight">НЕЗАВИСИМОЙ</span> третей особы, если имеются свидетели, способные подтвердить это видеоматериалом; это также касается и первой особы.
+                    </div>
+                </div>
+                
+                <div class="codex-rule">
+                    <span class="rule-number">3</span>
+                    <div class="rule-text">
+                        Имущество безусловно принадлежит первой стороне; однако при нарушении кодекса и/или фактора честности вторая сторона может потребовать компенсацию, которая будет оцениваться третьей стороной, не зависимой от ситуации; видео доказательства и/или свидетели также должны присутствовать.
+                    </div>
+                </div>
+                
+                <div class="codex-rule">
+                    <span class="rule-number">4</span>
+                    <div class="rule-text">
+                        Фактор честности является своего рода ограничителем; при его нарушении вы считаетесь в той или иной ситуации нечестным и теряете право оспаривать ситуацию.
+                    </div>
+                </div>
+                
+                <div class="codex-rule">
+                    <span class="rule-number">5</span>
+                    <div class="rule-text">
+                        <span class="highlight">НЕ СУЩЕСТВУЕТ</span> разделения Первой, Второй и Третей особы на участника ордена, что подразумевает, что все в ситуации равны независимо от того, кем вы являетесь.
+                    </div>
+                </div>
+                
+                <div class="codex-rule">
+                    <span class="rule-number">6</span>
+                    <div class="rule-text">
+                        При создании привата табличка обязана вмещать внутри себя [имя первой особы] и [черный список (если тот имеется)]; также она не должна быть заблокирована блоками.
+                        
+                        <div class="sub-rule">
+                            <span class="sub-rule-number">6.1</span>
+                            Черный список - это барьер для тех, кто в нём упомянут, но есть ряд условностей:
+                            <div class="sub-rule" style="margin-top: 10px; margin-left: 0; background: rgba(40, 0, 80, 0.3);">
+                                <span class="sub-rule-number">1.</span> При незнании про черный список первая особа обязана предупредить человека<br>
+                                <span class="sub-rule-number">2.</span> При повторном нарушении первая особа обязана предупредить и имеет право выгнать грубой силой не убивая (к примеру рукой)<br>
+                                <span class="sub-rule-number">3.</span> При нарушении в 4 раз первая особа обязана предупредить 2 и более раза после чего имеет право убить, обосновав это тем что он защищал свою территорию<br>
+                                <span class="sub-rule-number">4.</span> При повторении первая особа может убить вторую особу без обоснований, при этом максимум, что требуется - это доказательства предыдущих нарушений
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const starsContainer = document.getElementById('starsContainer');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const numbersImage = document.getElementById('numbersImage');
+        
+        let stars = [];
+        let animationActive = true;
+        const starAmount = 60;
+        const fallAngle = 65;
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight * 0.4;
+        
+        // Цвета звезд
+        const starColors = [
+            '#FFFFFF', '#F0F8FF', '#E6E6FA', '#FFF0F5', '#F5FFFA'
+        ];
+        
+        // Функция для обработки ошибки загрузки картинки
+        function handleImageError() {
+            if (numbersImage) {
+                // Создаем запасной вариант с числами
+                const container = numbersImage.parentElement;
+                const placeholder = document.createElement('div');
+                placeholder.className = 'image-loading';
+                placeholder.innerHTML = 'Загрузка изображения...';
+                
+                // Заменяем картинку на заглушку
+                numbersImage.style.display = 'none';
+                container.insertBefore(placeholder, numbersImage.nextSibling);
+                
+                // Через 3 секунды попробуем загрузить снова
+                setTimeout(() => {
+                    numbersImage.src = 'https://i.ibb.co/NndjsYJQ/Untitlvnvned.png?' + new Date().getTime();
+                    numbersImage.style.display = 'block';
+                    if (placeholder.parentElement) {
+                        placeholder.remove();
+                    }
+                }, 3000);
+            }
+        }
+        
+        // Предзагрузка картинки для лучшего пользовательского опыта
+        function preloadImage() {
+            const img = new Image();
+            img.src = 'https://i.ibb.co/NndjsYJQ/Untitlvnvned.png';
+            img.onload = function() {
+                console.log('Изображение успешно загружено');
+            };
+            img.onerror = function() {
+                console.log('Ошибка загрузки изображения');
+            };
+        }
+        
+        // Инициализация звезд
+        function initStars() {
+            starsContainer.innerHTML = '';
+            stars = [];
+            
+            for (let i = 0; i < starAmount; i++) {
+                createStar(i);
+            }
+        }
+        
+        // Создание звезды
+        function createStar(id) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            
+            const sizeType = Math.random();
+            let sizeClass, starSize;
+            
+            if (sizeType < 0.6) {
+                sizeClass = 'star-small';
+                starSize = 1;
+            } else if (sizeType < 0.9) {
+                sizeClass = 'star-medium';
+                starSize = 2;
+            } else {
+                sizeClass = 'star-large';
+                starSize = 3;
+            }
+            
+            star.classList.add(sizeClass);
+            
+            const colorIndex = Math.floor(Math.random() * starColors.length);
+            star.style.backgroundColor = starColors[colorIndex];
+            
+            const glowIntensity = 0.5 + Math.random() * 0.5;
+            star.style.boxShadow = `0 0 ${starSize * 3}px ${starSize}px rgba(255, 255, 255, ${glowIntensity * 0.4})`;
+            
+            let startX, startY;
+            const side = Math.random();
+            
+            if (side < 0.6) {
+                startX = Math.random() * window.innerWidth;
+                startY = -10;
+            } else if (side < 0.8) {
+                startX = -10;
+                startY = Math.random() * window.innerHeight * 0.7;
+            } else {
+                startX = window.innerWidth + 10;
+                startY = Math.random() * window.innerHeight * 0.7;
+            }
+            
+            star.style.left = `${startX}px`;
+            star.style.top = `${startY}px`;
+            
+            starsContainer.appendChild(star);
+            stars.push({
+                element: star,
+                id: id,
+                active: true,
+                size: starSize,
+                startX: startX,
+                startY: startY
+            });
+            
+            animateStar(star, id);
+        }
+        
+        // Анимация звезды
+        function animateStar(star, id) {
+            const starData = stars.find(s => s.id === id);
+            if (!starData) return;
+            
+            star.style.opacity = '0';
+            star.style.transform = 'translate(0, 0)';
+            
+            const delay = Math.random() * 3;
+            
+            const startX = starData.startX;
+            const startY = starData.startY;
+            
+            const dx = centerX - startX;
+            const dy = centerY - startY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            const dirX = dx / distance;
+            const dirY = dy / distance;
+            
+            const angleRad = (65 * Math.PI) / 180;
+            const rotatedX = dirX * Math.cos(angleRad) - dirY * Math.sin(angleRad);
+            const rotatedY = dirX * Math.sin(angleRad) + dirY * Math.cos(angleRad);
+            
+            const duration = (2 + Math.random() * 2) * (1 / (starData.size * 0.5));
+            
+            let startTime = null;
+            
+            function animate(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const elapsed = currentTime - startTime;
+                
+                if (elapsed < delay * 1000) {
+                    requestAnimationFrame(animate);
+                    return;
+                }
+                
+                const animationTime = elapsed - (delay * 1000);
+                const progress = Math.min(animationTime / (duration * 1000), 1);
+                const easeProgress = progress * progress;
+                
+                const moveDistance = distance * 1.5 * easeProgress;
+                const newX = startX + rotatedX * moveDistance;
+                const newY = startY + rotatedY * moveDistance;
+                
+                let opacity;
+                if (progress < 0.2) {
+                    opacity = progress / 0.2;
+                } else if (progress > 0.7) {
+                    opacity = (1 - progress) / 0.3;
+                } else {
+                    opacity = 1;
+                }
+                
+                const glowIntensity = 0.3 + 0.7 * Math.sin(progress * Math.PI);
+                
+                star.style.opacity = opacity.toString();
+                star.style.transform = `translate(${newX - startX}px, ${newY - startY}px)`;
+                star.style.boxShadow = `0 0 ${starData.size * 3 * glowIntensity}px ${starData.size * glowIntensity}px rgba(255, 255, 255, ${0.2 + glowIntensity * 0.3})`;
+                
+                if (progress < 1 && animationActive) {
+                    requestAnimationFrame(animate);
+                } else if (animationActive) {
+                    resetStar(star, id);
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Сброс звезды
+        function resetStar(star, id) {
+            const starData = stars.find(s => s.id === id);
+            if (!starData) return;
+            
+            const delay = 0.5 + Math.random() * 2;
+            
+            let newStartX, newStartY;
+            const side = Math.random();
+            
+            if (side < 0.6) {
+                newStartX = Math.random() * window.innerWidth;
+                newStartY = -10;
+            } else if (side < 0.8) {
+                newStartX = -10;
+                newStartY = Math.random() * window.innerHeight * 0.7;
+            } else {
+                newStartX = window.innerWidth + 10;
+                newStartY = Math.random() * window.innerHeight * 0.7;
+            }
+            
+            star.style.left = `${newStartX}px`;
+            star.style.top = `${newStartY}px`;
+            starData.startX = newStartX;
+            starData.startY = newStartY;
+            
+            setTimeout(() => {
+                if (animationActive) {
+                    animateStar(star, id);
+                }
+            }, delay * 1000);
+        }
+        
+        // Переключение вкладок
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Убираем активный класс у всех вкладок
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Добавляем активный класс текущей вкладке
+                tab.classList.add('active');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+            });
+        });
+        
+        // Адаптация к изменению размера окна
+        window.addEventListener('resize', () => {
+            centerX = window.innerWidth / 2;
+            centerY = window.innerHeight * 0.4;
+            
+            if (animationActive) {
+                animationActive = false;
+                setTimeout(() => {
+                    initStars();
+                    animationActive = true;
+                }, 100);
+            }
+        });
+        
+        // Инициализация
+        window.addEventListener('load', () => {
+            initStars();
+            preloadImage();
+            
+            // Анимация появления текста
+            setTimeout(() => {
+                document.querySelector('.order-name').style.animation = 'revealText 1.5s ease forwards';
+                document.querySelector('.order-description').style.animation = 'revealText 1.5s ease forwards 0.5s';
+            }, 500);
+        });
+    </script>
+</body>
+</html>
