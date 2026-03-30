@@ -313,7 +313,6 @@
         <div class="counter">
             📄 Найдено файлов: <span id="fileCount">0</span>
         </div>
-        <!-- Кнопка просто перезагружает страницу, список остаётся тот же (можно убрать, но оставлю для стиля) -->
         <div class="refresh-btn" id="manualRefreshBtn" style="background: rgba(30, 30, 50, 0.8); border: 1px solid rgba(255, 220, 150, 0.6); padding: 0.4rem 1.2rem; border-radius: 2rem; font-size: 0.85rem; cursor: pointer;">
             ⟳ Обновить
         </div>
@@ -323,40 +322,33 @@
         <!-- сюда будет вставлена галерея -->
     </div>
     <footer>
-        ✨ Вручную укажите HTML-файлы в массиве KNOWN_FILES в коде страницы.<br>
-        GitHub Pages не позволяет автоматически сканировать папку, поэтому список настраивается вручную.
+        ✨ Галерея Стасона · динамический портал
     </footer>
 </div>
 
 <script>
     (function() {
-        // ⚡⚡⚡ ОСНОВНОЙ МАССИВ ФАЙЛОВ ⚡⚡⚡
-        // ✏️ ВПИШИТЕ СЮДА ВСЕ ВАШИ HTML-ФАЙЛЫ (кроме index.html)
-        // Например: ["about.html", "gallery.html", "contact.html"]
+        // 🔥 ВСЕ ВАШИ HTML-ФАЙЛЫ (кроме index.html) ПРОПИШИТЕ ЗДЕСЬ 🔥
         const KNOWN_FILES = [
-            "dgdf.html",
-            // "about.html",
-            // "portfolio.html"
+            // Раскомментируйте и добавьте свои файлы:
+             "dgdf.html",
+            // "page2.html"
         ];
 
-        // Получаем элементы DOM
         const galleryContainer = document.getElementById('galleryContainer');
         const fileCountSpan = document.getElementById('fileCount');
 
-        // Функция отрисовки списка файлов
         function renderFileList(fileList) {
-            // Очищаем контейнер
             galleryContainer.innerHTML = '';
 
             if (!fileList.length) {
-                // Нет файлов — показываем сообщение
                 galleryContainer.innerHTML = `
                     <div class="empty-message" style="grid-column:1/-1;">
                         <div class="emoji-hint">🌌📭🌌</div>
                         <p>Пока нет дополнительных HTML-файлов в галерее</p>
                         <p style="font-size:0.85rem; margin-top:10px;">
-                            Чтобы добавить страницы, отредактируйте массив <strong>KNOWN_FILES</strong><br>
-                            в коде этого файла (index.html) и укажите имена ваших .html документов.
+                            Добавьте страницы в массив <strong>KNOWN_FILES</strong><br>
+                            внутри этого файла (index.html).
                         </p>
                         <p style="font-size:0.75rem; margin-top:12px; opacity:0.7;">
                             Пример: <code>["about.html", "portfolio.html", "contacts.html"]</code>
@@ -395,26 +387,17 @@
             }
         }
 
-        // Инициализация галереи
         function initGallery() {
-            // Убираем дубликаты и пустые строки, если вдруг кто-то добавил пустые элементы
             const validFiles = KNOWN_FILES.filter(name => name && typeof name === 'string' && name.trim().length > 0);
             renderFileList(validFiles);
         }
 
-        // Кнопка обновления — просто перерисовываем (полезно, если массив был изменён в консоли)
         const refreshBtn = document.getElementById('manualRefreshBtn');
         if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => {
-                initGallery();
-            });
+            refreshBtn.addEventListener('click', () => initGallery());
         }
 
-        // Запуск
         initGallery();
-
-        // Небольшое пояснение в консоль для разработчика
-        console.log('Галерея Стасона загружена. Чтобы добавить файлы, отредактируйте массив KNOWN_FILES в коде.');
     })();
 </script>
 </body>
