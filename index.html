@@ -9,7 +9,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* легкий эстетический эффект, но текст можно копировать при необходимости */
         }
 
         body {
@@ -24,8 +23,7 @@
             color: #eef5ff;
         }
 
-        /* ========= ПРИГЛУШЕННОЕ МЕРЦАНИЕ ЦВЕТОВ НА ФОНЕ ========= */
-        /* Абстрактное динамическое свечение, несколько слоев для мягкого "дыхания" */
+        /* ПРИГЛУШЕННОЕ МЕРЦАНИЕ ЦВЕТОВ НА ФОНЕ */
         .ambient-glow {
             position: fixed;
             top: 0;
@@ -45,7 +43,6 @@
             animation: breatheGlow 9s infinite alternate ease-in-out;
         }
 
-        /* первый шар — глубокий фиолетово-синий */
         .orb1 {
             width: 70vw;
             height: 70vw;
@@ -56,7 +53,6 @@
             opacity: 0.18;
         }
 
-        /* второй шар — тёмно-бордовый с малиновым отливом */
         .orb2 {
             width: 80vh;
             height: 80vh;
@@ -68,7 +64,6 @@
             opacity: 0.2;
         }
 
-        /* третий шар — холодный изумрудный оттенок */
         .orb3 {
             width: 60vw;
             height: 60vw;
@@ -80,7 +75,6 @@
             opacity: 0.15;
         }
 
-        /* четвертый шар - тёплый янтарный акцент, очень приглушенно */
         .orb4 {
             width: 50vw;
             height: 50vw;
@@ -103,7 +97,6 @@
             }
         }
 
-        /* тонкая зернистость для атмосферы (ещё один слой мерцания) */
         .noise-overlay {
             position: fixed;
             top: 0;
@@ -118,7 +111,6 @@
             mix-blend-mode: overlay;
         }
 
-        /* контентный слой поверх фоновой магии */
         .content {
             position: relative;
             z-index: 10;
@@ -127,7 +119,6 @@
             backdrop-filter: blur(2px);
         }
 
-        /* Заголовок главный */
         .hero {
             text-align: center;
             margin-bottom: 3rem;
@@ -145,7 +136,6 @@
             background-clip: text;
             color: transparent;
             text-shadow: 0 0 12px rgba(100, 80, 255, 0.3);
-            word-break: keep-all;
         }
 
         .sub {
@@ -156,7 +146,6 @@
             letter-spacing: 1px;
         }
 
-        /* панель управления, индикаторы */
         .status-panel {
             background: rgba(10, 10, 20, 0.55);
             backdrop-filter: blur(8px);
@@ -186,29 +175,6 @@
             font-size: 1.2rem;
         }
 
-        .refresh-btn {
-            background: rgba(30, 30, 50, 0.8);
-            border: 1px solid rgba(255, 220, 150, 0.6);
-            padding: 0.4rem 1.2rem;
-            border-radius: 2rem;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: #f2e8cf;
-            font-family: inherit;
-            backdrop-filter: blur(4px);
-        }
-
-        .refresh-btn:hover {
-            background: rgba(80, 70, 130, 0.9);
-            border-color: #ffdfa5;
-            color: white;
-            transform: scale(0.97);
-            box-shadow: 0 0 8px rgba(200, 180, 255, 0.3);
-        }
-
-        /* сетка карточек (кнопок перехода) */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -216,7 +182,6 @@
             margin-top: 1rem;
         }
 
-        /* каждая карточка — кнопка перехода */
         .file-card {
             background: rgba(12, 12, 20, 0.7);
             backdrop-filter: blur(12px);
@@ -274,7 +239,6 @@
             border-left: 2px solid #e06c2e;
         }
 
-        /* сообщение, если нет других файлов */
         .empty-message {
             text-align: center;
             padding: 3rem 2rem;
@@ -303,7 +267,6 @@
             padding-top: 1.8rem;
         }
 
-        /* адаптация для мобильных устройств */
         @media (max-width: 640px) {
             body {
                 padding: 1rem;
@@ -321,7 +284,6 @@
             }
         }
 
-        /* анимация легкого мерцания для отдельных элементов (дополнительный шарм) */
         @keyframes softPulse {
             0% { text-shadow: 0 0 0px rgba(200,180,255,0);}
             100% { text-shadow: 0 0 6px rgba(170,140,255,0.3);}
@@ -351,82 +313,108 @@
         <div class="counter">
             📄 Найдено файлов: <span id="fileCount">0</span>
         </div>
-        <div class="refresh-btn" id="manualRefreshBtn">
-            ⟳ Обновить список
+        <!-- Кнопка просто перезагружает страницу, список остаётся тот же (можно убрать, но оставлю для стиля) -->
+        <div class="refresh-btn" id="manualRefreshBtn" style="background: rgba(30, 30, 50, 0.8); border: 1px solid rgba(255, 220, 150, 0.6); padding: 0.4rem 1.2rem; border-radius: 2rem; font-size: 0.85rem; cursor: pointer;">
+            ⟳ Обновить
         </div>
     </div>
 
-    <!-- контейнер для динамически создаваемых кнопок перехода -->
     <div id="galleryContainer" class="gallery-grid">
-        <!-- индикатор загрузки -->
-        <div class="empty-message" style="grid-column:1/-1;">
-            <div class="emoji-hint">✨🔍✨</div>
-            <p>сканирование файлов .html ...</p>
-        </div>
+        <!-- сюда будет вставлена галерея -->
     </div>
     <footer>
-        ⚡ автоопределение всех HTML-файлов в текущей директории<br>
-        кроме index.html · приглушенное свечение фона · галерея Стасона
+        ✨ Вручную укажите HTML-файлы в массиве KNOWN_FILES в коде страницы.<br>
+        GitHub Pages не позволяет автоматически сканировать папку, поэтому список настраивается вручную.
     </footer>
 </div>
 
-<script id="ghfix01">
-(async function() {
-    const galleryContainer = document.getElementById('galleryContainer');
-    const fileCountSpan = document.getElementById('fileCount');
+<script>
+    (function() {
+        // ⚡⚡⚡ ОСНОВНОЙ МАССИВ ФАЙЛОВ ⚡⚡⚡
+        // ✏️ ВПИШИТЕ СЮДА ВСЕ ВАШИ HTML-ФАЙЛЫ (кроме index.html)
+        // Например: ["about.html", "gallery.html", "contact.html"]
+        const KNOWN_FILES = [
+            "dgdf.html",
+            // "about.html",
+            // "portfolio.html"
+        ];
 
-    function renderFileList(files) {
-        galleryContainer.innerHTML = '';
+        // Получаем элементы DOM
+        const galleryContainer = document.getElementById('galleryContainer');
+        const fileCountSpan = document.getElementById('fileCount');
 
-        if (!files.length) {
-            galleryContainer.innerHTML = `
-                <div class="empty-message" style="grid-column:1/-1;">
-                    <p>Нет страниц</p>
-                </div>
-            `;
-            fileCountSpan.innerText = '0';
-            return;
+        // Функция отрисовки списка файлов
+        function renderFileList(fileList) {
+            // Очищаем контейнер
+            galleryContainer.innerHTML = '';
+
+            if (!fileList.length) {
+                // Нет файлов — показываем сообщение
+                galleryContainer.innerHTML = `
+                    <div class="empty-message" style="grid-column:1/-1;">
+                        <div class="emoji-hint">🌌📭🌌</div>
+                        <p>Пока нет дополнительных HTML-файлов в галерее</p>
+                        <p style="font-size:0.85rem; margin-top:10px;">
+                            Чтобы добавить страницы, отредактируйте массив <strong>KNOWN_FILES</strong><br>
+                            в коде этого файла (index.html) и укажите имена ваших .html документов.
+                        </p>
+                        <p style="font-size:0.75rem; margin-top:12px; opacity:0.7;">
+                            Пример: <code>["about.html", "portfolio.html", "contacts.html"]</code>
+                        </p>
+                    </div>
+                `;
+                fileCountSpan.innerText = '0';
+                return;
+            }
+
+            fileCountSpan.innerText = fileList.length;
+
+            for (let fileName of fileList) {
+                const card = document.createElement('a');
+                card.className = 'file-card';
+                card.href = fileName;
+                card.target = '_self';
+
+                const iconSpan = document.createElement('div');
+                iconSpan.className = 'file-icon';
+                iconSpan.innerHTML = '📄✨';
+
+                const nameSpan = document.createElement('div');
+                nameSpan.className = 'file-name';
+                nameSpan.innerText = fileName;
+
+                const badgeDiv = document.createElement('div');
+                badgeDiv.className = 'file-badge';
+                badgeDiv.innerHTML = `<span class="badge-html">🔗 HTML-документ</span> <span>➡️ переход</span>`;
+
+                card.appendChild(iconSpan);
+                card.appendChild(nameSpan);
+                card.appendChild(badgeDiv);
+
+                galleryContainer.appendChild(card);
+            }
         }
 
-        fileCountSpan.innerText = files.length;
-
-        for (let fileName of files) {
-            const card = document.createElement('a');
-            card.className = 'file-card';
-            card.href = fileName;
-
-            card.innerHTML = `
-                <div class="file-icon">📄</div>
-                <div class="file-name">${fileName}</div>
-                <div class="file-badge">➡️ открыть</div>
-            `;
-
-            galleryContainer.appendChild(card);
+        // Инициализация галереи
+        function initGallery() {
+            // Убираем дубликаты и пустые строки, если вдруг кто-то добавил пустые элементы
+            const validFiles = KNOWN_FILES.filter(name => name && typeof name === 'string' && name.trim().length > 0);
+            renderFileList(validFiles);
         }
-    }
 
-    async function loadFiles() {
-        try {
-            const res = await fetch('files.json');
-            const files = await res.json();
-            renderFileList(files);
-        } catch (e) {
-            console.error(e);
-            galleryContainer.innerHTML = `
-                <div class="empty-message" style="grid-column:1/-1;">
-                    <p>Ошибка загрузки files.json</p>
-                </div>
-            `;
+        // Кнопка обновления — просто перерисовываем (полезно, если массив был изменён в консоли)
+        const refreshBtn = document.getElementById('manualRefreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                initGallery();
+            });
         }
-    }
 
-    loadFiles();
-})();
-</script>
-        
-        // небольшой эстетический момент: если пользователь нажал на карточку, сохраняем ощущение
-        // также добавим "динамический title"
-        document.title = "Галерея Стасона · портал";
+        // Запуск
+        initGallery();
+
+        // Небольшое пояснение в консоль для разработчика
+        console.log('Галерея Стасона загружена. Чтобы добавить файлы, отредактируйте массив KNOWN_FILES в коде.');
     })();
 </script>
 </body>
