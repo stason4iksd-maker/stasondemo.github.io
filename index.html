@@ -370,221 +370,59 @@
     </footer>
 </div>
 
-<script>
-    (function() {
-        // получаем контейнер и элементы для отображения
-        const galleryContainer = document.getElementById('galleryContainer');
-        const fileCountSpan = document.getElementById('fileCount');
+<script id="ghfix01">
+(async function() {
+    const galleryContainer = document.getElementById('galleryContainer');
+    const fileCountSpan = document.getElementById('fileCount');
 
-        // служебная функция: очистить контейнер (кроме возможных сообщений)
-        function clearContainer() {
-            galleryContainer.innerHTML = '';
-        }
+    function renderFileList(files) {
+        galleryContainer.innerHTML = '';
 
-        // показать состояние загрузки/пустоты
-        function showLoadingState(isLoading = true) {
-            if (isLoading) {
-                galleryContainer.innerHTML = `
-                    <div class="empty-message" style="grid-column:1/-1;">
-                        <div class="emoji-hint">🌀 ⚡ 🌀</div>
-                        <p>поиск HTML-файлов в папке...</p>
-                        <small style="opacity:0.6">анализ директории через list API GitHub Pages (или локальный сервер)</small>
-                    </div>
-                `;
-            }
-        }
-
-        // отображение списка файлов (массив имён .html кроме текущего документа)
-        function renderFileList(htmlFiles) {
-            clearContainer();
-            if (!htmlFiles.length) {
-                // нет дополнительных html страниц
-                galleryContainer.innerHTML = `
-                    <div class="empty-message" style="grid-column:1/-1;">
-                        <div class="emoji-hint">🌌📭🌌</div>
-                        <p>Пока нет дополнительных HTML-файлов в этой папке</p>
-                        <p style="font-size:0.85rem; margin-top:10px;">Создайте новый файл, например <strong>about.html</strong> или <strong>project.html</strong>, и он автоматически появится здесь как кнопка!</p>
-                    </div>
-                `;
-                fileCountSpan.innerText = '0';
-                return;
-            }
-
-            fileCountSpan.innerText = htmlFiles.length;
-            // для каждого файла создаём карточку-ссылку
-            for (let fileName of htmlFiles) {
-                const card = document.createElement('a');
-                card.className = 'file-card';
-                // указываем относительный путь к файлу
-                card.href = fileName;
-                // чтобы ссылка вела на страницу без перезагрузки в том же окне (стандартное поведение)
-                // но добавим атрибут для открытия без форсирования
-                card.target = '_self';
-                // декоративный элемент
-                const iconSpan = document.createElement('div');
-                iconSpan.className = 'file-icon';
-                // иконка в зависимости от имени (стилизация)
-                iconSpan.innerHTML = '📄✨';
-                
-                const nameSpan = document.createElement('div');
-                nameSpan.className = 'file-name';
-                // отображаем имя файла с расширением, но красиво
-                let displayName = fileName;
-                // если имя длинное, но покажем целиком, перенос слов
-                nameSpan.innerText = displayName;
-                
-                const badgeDiv = document.createElement('div');
-                badgeDiv.className = 'file-badge';
-                badgeDiv.innerHTML = `<span class="badge-html">🔗 HTML-документ</span> <span>➡️ переход</span>`;
-                
-                card.appendChild(iconSpan);
-                card.appendChild(nameSpan);
-                card.appendChild(badgeDiv);
-                
-                // легкий эффект: при клике можно добавить необязательный лог, но оставляем стандартную навигацию
-                card.addEventListener('click', (e) => {
-                    // разрешаем стандартный переход
-                    console.log(`Переход на страницу: ${fileName}`);
-                });
-                galleryContainer.appendChild(card);
-            }
-        }
-
-        // основной механизм: получить список всех HTML-файлов в текущей директории.
-        // Поскольку в GitHub Pages нет прямого доступа к списку файлов через обычный fetch,
-        // мы используем элегантный метод: запрос к директории и парсинг ссылок из ответа сервера.
-        // Это работает на GitHub Pages, так как при обращении к папке без index.html сервер отдает
-        // листинг директории в виде HTML (если включено, и во многих окружениях статики - да)
-        // Но для надёжности, мы также поддержим сценарий, если не удастся распарсить - предложим ручное обновление.
-        // Альтернативно: пробуем запросить список через файл "list.json"? нет, поэтому парсим страницу каталога.
-        // На GitHub Pages, при включённой опции "можно просматривать файлы", отдаётся стандартная страница со ссылками.
-        // Для большей стабильности делаем запрос к текущему пути './' и извлекаем все .html ссылки, исключая текущий файл.
-        
-        async function fetchHtmlFilesFromDirectory() {
-            // определяем текущий базовый путь (директория, где находится index.html)
-            let basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            // если путь пустой (корень), то используем './'
-            const directoryUrl = basePath || './';
-            
-            try {
-                // делаем запрос к текущей директории, получаем HTML листинг
-                const response = await fetch(directoryUrl, {
-                    cache: 'no-store',
-                    headers: {
-                        'Cache-Control': 'no-cache'
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status} - не удалось получить список директории`);
-                }
-                const htmlText = await response.text();
-                // парсим HTML-строку, ищем все ссылки на .html файлы
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlText, 'text/html');
-                const anchors = doc.querySelectorAll('a');
-                const currentFileName = window.location.pathname.split('/').pop() || 'index.html';
-                const currentFileNormalized = currentFileName.toLowerCase();
-                
-                const foundFiles = new Set();
-                for (let anchor of anchors) {
-                    let href = anchor.getAttribute('href');
-                    if (!href) continue;
-                    // декодируем URL (некоторые могут быть закодированы)
-                    let decodedHref = decodeURIComponent(href);
-                    // убираем возможные параметры и якоря
-                    if (decodedHref.includes('?')) decodedHref = decodedHref.split('?')[0];
-                    if (decodedHref.includes('#')) decodedHref = decodedHref.split('#')[0];
-                    
-                    // проверяем, что это .html файл (заканчивается на .html, также возможен .htm, но для чистоты .html)
-                    if (decodedHref.toLowerCase().endsWith('.html')) {
-                        // избавляемся от слешей в начале если есть
-                        let cleanName = decodedHref;
-                        if (cleanName.startsWith('./')) cleanName = cleanName.substring(2);
-                        if (cleanName.startsWith('/')) cleanName = cleanName.substring(1);
-                        // исключаем текущий активный файл (сам index.html)
-                        if (cleanName.toLowerCase() !== currentFileNormalized && cleanName.trim() !== '') {
-                            // дополнительная проверка на валидность имени (не пустое и не внешняя ссылка)
-                            if (!cleanName.includes('://') && !cleanName.startsWith('http')) {
-                                foundFiles.add(cleanName);
-                            }
-                        }
-                    }
-                }
-                // преобразуем Set в массив и сортируем по алфавиту для наглядности
-                let filesArray = Array.from(foundFiles);
-                filesArray.sort((a,b) => a.localeCompare(b));
-                return filesArray;
-            } catch (err) {
-                console.warn('Не удалось получить листинг через директорию:', err);
-                // Второй метод (резервный): если по какой-то причине запрос к папке не дал списка,
-                // мы не можем гарантировать автоматическое определение, но предоставим возможность
-                // использовать "ручное добавление" или покажем подсказку.
-                // Однако, можно еще попробовать альтернативный подход: извлечь из ссылок текущей страницы?
-                // Но более правильно – предложить пользователю явно указать, либо ждать.
-                // Так как это GitHub Pages, в 99% случаев метод с fetch директории работает.
-                // Для максимальной совместимости, если ошибка, возвращаем пустой массив и покажем рекомендацию.
-                return [];
-            }
-        }
-        
-        // также пробуем альтернативный fallback: иногда в GitHub Pages включена опция "index" не отдаёт листинг,
-        // но мы дополнительно можем попробовать получить файлы через статический манифест? Нет.
-        // В таком случае предложим пользователю создать файл .nojekyll и убедиться, что опция листинга включена.
-        // Покажем дружелюбное сообщение.
-        
-        async function updateGallery() {
-            // показать загрузку
-            showLoadingState(true);
-            let htmlFiles = [];
-            try {
-                htmlFiles = await fetchHtmlFilesFromDirectory();
-            } catch (globalErr) {
-                console.error("Ошибка при сборе файлов:", globalErr);
-                htmlFiles = [];
-            }
-            // если по какой-то причине результат null или не массив
-            if (!Array.isArray(htmlFiles)) htmlFiles = [];
-            
-            // дополнительная фильтрация: удалить дубликаты, которые могли попасть из-за регистра
-            const unique = [];
-            const lowerMap = new Map();
-            for (const file of htmlFiles) {
-                const lower = file.toLowerCase();
-                if (!lowerMap.has(lower)) {
-                    lowerMap.set(lower, file);
-                    unique.push(file);
-                }
-            }
-            // после всех ухищрений финальный массив
-            const finalFiles = unique.filter(f => f !== 'index.html' && f !== './index.html' && f !== '/index.html');
-            renderFileList(finalFiles);
-        }
-        
-        // обработчик ручного обновления
-        const refreshBtn = document.getElementById('manualRefreshBtn');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                updateGallery().catch(e => console.warn(e));
-            });
-        }
-        
-        // инициализация при загрузке страницы
-        updateGallery().catch(err => {
-            console.error("неудачный стартовый сбор:", err);
+        if (!files.length) {
             galleryContainer.innerHTML = `
                 <div class="empty-message" style="grid-column:1/-1;">
-                    <div class="emoji-hint">⚠️🌙⚠️</div>
-                    <p>Не удалось автоматически определить файлы .html</p>
-                    <p>Убедитесь, что репозиторий GitHub Pages разрешает просмотр содержимого папок (обычно работает).<br>
-                    Нажмите «Обновить список» или проверьте, что в папке есть другие .html документы.</p>
-                    <button id="retryBtn" style="margin-top:12px; background:#2a2a3a; border:1px solid #aaa; padding:6px 18px; border-radius:28px; color:white; cursor:pointer;">⟳ Повторить попытку</button>
+                    <p>Нет страниц</p>
                 </div>
             `;
-            const retry = document.getElementById('retryBtn');
-            if (retry) retry.addEventListener('click', () => updateGallery());
             fileCountSpan.innerText = '0';
-        });
+            return;
+        }
+
+        fileCountSpan.innerText = files.length;
+
+        for (let fileName of files) {
+            const card = document.createElement('a');
+            card.className = 'file-card';
+            card.href = fileName;
+
+            card.innerHTML = `
+                <div class="file-icon">📄</div>
+                <div class="file-name">${fileName}</div>
+                <div class="file-badge">➡️ открыть</div>
+            `;
+
+            galleryContainer.appendChild(card);
+        }
+    }
+
+    async function loadFiles() {
+        try {
+            const res = await fetch('files.json');
+            const files = await res.json();
+            renderFileList(files);
+        } catch (e) {
+            console.error(e);
+            galleryContainer.innerHTML = `
+                <div class="empty-message" style="grid-column:1/-1;">
+                    <p>Ошибка загрузки files.json</p>
+                </div>
+            `;
+        }
+    }
+
+    loadFiles();
+})();
+</script>
         
         // небольшой эстетический момент: если пользователь нажал на карточку, сохраняем ощущение
         // также добавим "динамический title"
