@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Галерея Стасона | Портальная страница</title>
+    <title>Галерея Стасона</title>
     <style>
         * {
             margin: 0;
@@ -23,7 +23,6 @@
             color: #eef5ff;
         }
 
-        /* ПРИГЛУШЕННОЕ МЕРЦАНИЕ ЦВЕТОВ НА ФОНЕ */
         .ambient-glow {
             position: fixed;
             top: 0;
@@ -318,21 +317,14 @@
         </div>
     </div>
 
-    <div id="galleryContainer" class="gallery-grid">
-        <!-- сюда будет вставлена галерея -->
-    </div>
-    <footer>
-        ✨ Галерея Стасона · динамический портал
-    </footer>
+    <div id="galleryContainer" class="gallery-grid"></div>
+    <footer>✨ Галерея Стасона</footer>
 </div>
 
 <script>
     (function() {
-        // 🔥 ВСЕ ВАШИ HTML-ФАЙЛЫ (кроме index.html) ПРОПИШИТЕ ЗДЕСЬ 🔥
         const KNOWN_FILES = [
-            // Раскомментируйте и добавьте свои файлы:
-             "dgdf.html",
-            // "page2.html"
+            "первый мой сайт.html"
         ];
 
         const galleryContainer = document.getElementById('galleryContainer');
@@ -345,14 +337,7 @@
                 galleryContainer.innerHTML = `
                     <div class="empty-message" style="grid-column:1/-1;">
                         <div class="emoji-hint">🌌📭🌌</div>
-                        <p>Пока нет дополнительных HTML-файлов в галерее</p>
-                        <p style="font-size:0.85rem; margin-top:10px;">
-                            Добавьте страницы в массив <strong>KNOWN_FILES</strong><br>
-                            внутри этого файла (index.html).
-                        </p>
-                        <p style="font-size:0.75rem; margin-top:12px; opacity:0.7;">
-                            Пример: <code>["about.html", "portfolio.html", "contacts.html"]</code>
-                        </p>
+                        <p>Пока нет дополнительных HTML-файлов</p>
                     </div>
                 `;
                 fileCountSpan.innerText = '0';
