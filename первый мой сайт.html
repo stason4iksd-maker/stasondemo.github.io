@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Орден Бездны</title>
+    <title>Орден Теней</title>
     <style>
         * {
             margin: 0;
@@ -61,6 +61,7 @@
             border-bottom: 1px solid rgba(120, 80, 220, 0.3);
             z-index: 100;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            flex-wrap: wrap;
         }
         
         .logo {
@@ -76,6 +77,7 @@
         .nav-tabs {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
         
         .tab {
@@ -389,6 +391,85 @@
             color: #B0A0FF;
         }
         
+        /* Стили для страницы покровительства */
+        .patronage-section {
+            background: rgba(15, 0, 30, 0.75);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(120, 80, 220, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        .patronage-title {
+            font-size: 1.8rem;
+            color: #B19CD9;
+            margin-bottom: 20px;
+            border-left: 4px solid #8A2BE2;
+            padding-left: 20px;
+        }
+        
+        .patronage-subtitle {
+            font-size: 1.4rem;
+            color: #C0B0FF;
+            margin: 20px 0 15px 0;
+        }
+        
+        .role-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .role-card {
+            background: rgba(40, 0, 80, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(140, 100, 255, 0.3);
+        }
+        
+        .role-card h3 {
+            color: #B0A0FF;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .role-card ul, .patronage-section ul {
+            margin-left: 20px;
+            list-style-type: none;
+        }
+        
+        .role-card li, .patronage-section li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .role-card li:before, .patronage-section li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #8A2BE2;
+            font-weight: bold;
+        }
+        
+        .council-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .council-item {
+            background: rgba(75, 0, 130, 0.3);
+            border-radius: 8px;
+            padding: 10px 20px;
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+        
         @media (max-width: 768px) {
             .header {
                 padding: 15px 20px;
@@ -415,7 +496,7 @@
                 font-size: 2.5rem;
             }
             
-            .order-description, .codex-content {
+            .order-description, .codex-content, .patronage-section {
                 padding: 25px;
                 font-size: 1.1rem;
             }
@@ -424,8 +505,8 @@
                 grid-template-columns: 1fr;
             }
             
-            .persona-definition, .codex-rule {
-                padding: 15px;
+            .role-grid {
+                grid-template-columns: 1fr;
             }
             
             .rule-text {
@@ -436,10 +517,6 @@
                 margin-left: 20px;
                 padding: 10px;
             }
-            
-            .image-loading {
-                height: 200px;
-            }
         }
     </style>
 </head>
@@ -448,28 +525,28 @@
     <div class="stars-container" id="starsContainer"></div>
     
     <div class="header">
-        <div class="logo">ОРДЕН БЕЗДНЫ</div>
+        <div class="logo">ОРДЕН ТЕНЕЙ</div>
         <div class="nav-tabs">
             <button class="tab active" data-tab="main">Главная</button>
             <button class="tab" data-tab="codex">Кодекс</button>
+            <button class="tab" data-tab="patronage">Покровительство</button>
         </div>
     </div>
     
     <div class="content">
+        <!-- Главная вкладка -->
         <div class="tab-content active" id="main-content">
-            <h1 class="order-name">ОРДЕН БЕЗДНЫ</h1>
+            <h1 class="order-name">ОРДЕН ТЕНЕЙ</h1>
             
             <div class="order-description">
-                <p>Орден Бездны представляет собой группу, состоящую как минимум из четырех человек. Основной целью данного ордена является защита прав и идей игроков, а также их частной собственности в соответствии с установленным кодексом.</p>
+                <p>Орден Теней представляет собой группу, состоящую как минимум из двух человек. Основной целью данного ордена является Покровительство и защита прав и идей игроков, а также их частной собственности в соответствии с установленным кодексом.</p>
             </div>
             
             <div class="members-section">
                 <!-- Место для информации об участниках -->
             </div>
             
-            <!-- Контейнер для картинки с числами -->
             <div class="image-container">
-                <!-- Картинка с числами от 1 до 10 -->
                 <img src="https://i.ibb.co/NndjsYJQ/Untitlvnvned.png" 
                      alt="Числа от 1 до 10" 
                      class="main-image"
@@ -478,12 +555,13 @@
             </div>
         </div>
         
+        <!-- Кодекс -->
         <div class="tab-content" id="codex-content">
-            <h2 class="codex-title">КОДЕКС ОРДЕНА БЕЗДНЫ</h2>
+            <h2 class="codex-title">КОДЕКС ОРДЕНА ТЕНЕЙ</h2>
             
             <div class="codex-content">
                 <div class="codex-intro">
-                    Каждый участник Ордена Бездны обязан строго придерживаться кодекса, изложенного ниже:
+                    Каждый участник Ордена Теней обязан строго придерживаться кодекса, изложенного ниже:
                 </div>
                 
                 <div class="persona-definition">
@@ -509,7 +587,7 @@
                 <div class="codex-rule">
                     <span class="rule-number">2</span>
                     <div class="rule-text">
-                        В случае нападения на первую особу она имеет право на убийство и на передачу 70% всего имущества второй особы; если вторая особа не согласна с решением первой, она может оспорить изъятие имущества у любой <span class="highlight">НЕЗАВИСИМОЙ</span> третей особы, если имеются свидетели, способные подтвердить это видеоматериалом; это также касается и первой особы.
+                        В случае нападения на первую особу она имеет право на убийство и на передачу 70% всего имущества второй особе, что подразумевает, что 30% остаются у первой особы как компенсация; если вторая особа не согласна с решением первой на изъятие 30%, то она может оспорить у любой <span class="highlight">НЕЗАВИСИМОЙ</span> третей особы, если имеются свидетели, способные подтвердить это видеоматериалом; это также касается и первой особы. В случае обмана применяется Фактор честности.
                     </div>
                 </div>
                 
@@ -551,6 +629,132 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="codex-rule">
+                    <span class="rule-number">7</span>
+                    <div class="rule-text">
+                        Клевета на первую особу запрещена. В случае распространения заведомо ложной информации, порочащей честь и достоинство первой особы, вторая особа обязана публично опровергнуть свои слова и выплатить компенсацию в размере 50% от суммы нанесённого ущерба, определяемого третьей независимой стороной. При отсутствии доказательств или отказе от опровержения первая особа имеет право требовать полного возмещения ущерба и применения Фактора честности.
+                    </div>
+                </div>
+
+                <!-- Новая статья 8: Нарушения фактора честности (как 6.1) -->
+                <div class="codex-rule">
+                    <span class="rule-number">8</span>
+                    <div class="rule-text">
+                        Нарушениями фактора честности считаются:
+                        <div class="sub-rule" style="margin-top: 15px;">
+                            <span class="sub-rule-number">1.</span> Ложные обвинения.<br>
+                            <span class="sub-rule-number">2.</span> Утаивание доказательств.<br>
+                            <span class="sub-rule-number">3.</span> Манипуляция свидетелями.<br>
+                            <span class="sub-rule-number">4.</span> Повторное нарушение после предупреждения.
+                        </div>
+                        При любом из этих нарушений виновная сторона автоматически лишается права оспаривать решение по данному делу, и все вопросы решаются в пользу пострадавшей стороны. Совет Ордена может применить дополнительные санкции.
+                    </div>
+                </div>
+
+                <!-- Новая статья 9: Штрафы в казну ордена -->
+                <div class="codex-rule">
+                    <span class="rule-number">9</span>
+                    <div class="rule-text">
+                        За нарушения кодекса могут применяться денежные штрафы в казну ордена. Размер штрафа определяется Советом Покровителей в зависимости от тяжести проступка и составляет от 10% до 50% от стоимости имущества нарушителя на момент нарушения. Штраф взимается в ресурсах, равноценных указанному проценту. Средства казны используются для компенсации пострадавшим и поддержки покровительства.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вкладка Покровительство -->
+        <div class="tab-content" id="patronage-content">
+            <h2 class="codex-title">СИСТЕМА ПОКРОВИТЕЛЬСТВА</h2>
+            
+            <div class="codex-content">
+                <div class="codex-intro">
+                    Покровительство — основа Ордена Теней. Опытные участники берут под крыло новичков, создавая прочную сеть взаимопомощи и защиты.
+                </div>
+                
+                <!-- Роли Покровителя и Подопечного -->
+                <div class="patronage-section">
+                    <h3 class="patronage-title">Роли Покровителя и Подопечного</h3>
+                    <div class="role-grid">
+                        <div class="role-card">
+                            <h3>🛡️ Покровитель</h3>
+                            <p>Опытный участник ордена, который берёт шефство над новичком или более слабым игроком.</p>
+                            <ul>
+                                <li>Обучает правилам ордена и игровой механике</li>
+                                <li>Помогает с постройкой привата, добычей ресурсов</li>
+                                <li>Защищает подопечного в конфликтах (в рамках кодекса)</li>
+                                <li>Несёт ответственность за действия подопечного (помогает уладить ситуацию или несёт часть наказания)</li>
+                            </ul>
+                        </div>
+                        <div class="role-card">
+                            <h3>🌟 Подопечный</h3>
+                            <p>Получает защиту, помощь ресурсами, советы и сопровождение в сложных ситуациях.</p>
+                            <ul>
+                                <li>Обязан следовать советам покровителя</li>
+                                <li>Не нарушать кодекс</li>
+                                <li>Уважать наставника и других членов ордена</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Преимущества для покровителя -->
+                <div class="patronage-section">
+                    <h3 class="patronage-title">Преимущества для покровителя</h3>
+                    <ul>
+                        <li>📈 Повышение ранга/статуса внутри ордена</li>
+                        <li>💰 Доля от успехов подопечного (например, 5% от добычи или компенсации, полученной подопечным)</li>
+                        <li>🗳️ Возможность голосовать по важным вопросам ордена</li>
+                        <li>🏆 Награда за успешное прохождение подопечным испытательного срока</li>
+                    </ul>
+                </div>
+                
+                <!-- Совет Покровителей -->
+                <div class="patronage-section">
+                    <h3 class="patronage-title">Совет Покровителей</h3>
+                    <p>Орган из 3–5 старших участников, который:</p>
+                    <ul>
+                        <li>Разбирает споры, где стороны не могут договориться</li>
+                        <li>Присваивает статус покровителя и контролирует его исполнение</li>
+                        <li>Ведёт «Книгу покровительства» — журнал успешных кейсов</li>
+                        <li>Определяет размер штрафов и компенсаций</li>
+                    </ul>
+                    <div class="council-list">
+                        <div class="council-item">Верховный Покровитель</div>
+                        <div class="council-item">Хранитель Книги</div>
+                        <div class="council-item">Судья Теней</div>
+                    </div>
+                </div>
+                
+                <!-- Ресурсная поддержка -->
+                <div class="patronage-section">
+                    <h3 class="patronage-title">Ресурсная поддержка</h3>
+                    <ul>
+                        <li>📦 Орден имеет общую казну (часть от штрафов, добровольные взносы)</li>
+                        <li>🛡️ Из казны выделяются средства на помощь пострадавшим (компенсация ущерба, если нападение было несправедливым)</li>
+                        <li>🔧 Покровители могут получать доступ к общим ресурсам для помощи подопечным</li>
+                    </ul>
+                </div>
+                
+                <!-- Система наставничества -->
+                <div class="patronage-section">
+                    <h3 class="patronage-title">Система наставничества</h3>
+                    <ul>
+                        <li>Каждый новый участник обязан выбрать покровителя в течение 3 дней</li>
+                        <li>Если покровитель не справляется, подопечный может сменить наставника через Совет</li>
+                        <li>Покровитель, чей подопечный успешно проходит «испытательный срок» (например, 30 дней без нарушений), получает награду из казны</li>
+                    </ul>
+                </div>
+                
+                <!-- Кодекс покровительства -->
+                <div class="patronage-section">
+                    <h3 class="patronage-title">Кодекс покровительства</h3>
+                    <ul>
+                        <li>Покровитель не имеет права требовать от подопечного действий, нарушающих кодекс Ордена</li>
+                        <li>В случае конфликта между покровителем и подопечным решение принимает Совет Покровителей</li>
+                        <li>Покровитель обязан помогать подопечному в защите его имущества и территории</li>
+                        <li>Нарушение покровителем своих обязанностей влечёт временное лишение статуса и штраф в казну</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -565,255 +769,145 @@
         let animationActive = true;
         const starAmount = 60;
         const fallAngle = 65;
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight * 0.4;
+        let centerX = window.innerWidth / 2;
+        let centerY = window.innerHeight * 0.4;
         
-        // Цвета звезд
         const starColors = [
             '#FFFFFF', '#F0F8FF', '#E6E6FA', '#FFF0F5', '#F5FFFA'
         ];
         
-        // Функция для обработки ошибки загрузки картинки
         function handleImageError() {
             if (numbersImage) {
-                // Создаем запасной вариант с числами
                 const container = numbersImage.parentElement;
                 const placeholder = document.createElement('div');
                 placeholder.className = 'image-loading';
                 placeholder.innerHTML = 'Загрузка изображения...';
-                
-                // Заменяем картинку на заглушку
                 numbersImage.style.display = 'none';
                 container.insertBefore(placeholder, numbersImage.nextSibling);
-                
-                // Через 3 секунды попробуем загрузить снова
                 setTimeout(() => {
                     numbersImage.src = 'https://i.ibb.co/NndjsYJQ/Untitlvnvned.png?' + new Date().getTime();
                     numbersImage.style.display = 'block';
-                    if (placeholder.parentElement) {
-                        placeholder.remove();
-                    }
+                    if (placeholder.parentElement) placeholder.remove();
                 }, 3000);
             }
         }
         
-        // Предзагрузка картинки для лучшего пользовательского опыта
         function preloadImage() {
             const img = new Image();
             img.src = 'https://i.ibb.co/NndjsYJQ/Untitlvnvned.png';
-            img.onload = function() {
-                console.log('Изображение успешно загружено');
-            };
-            img.onerror = function() {
-                console.log('Ошибка загрузки изображения');
-            };
         }
         
-        // Инициализация звезд
         function initStars() {
             starsContainer.innerHTML = '';
             stars = [];
-            
-            for (let i = 0; i < starAmount; i++) {
-                createStar(i);
-            }
+            for (let i = 0; i < starAmount; i++) createStar(i);
         }
         
-        // Создание звезды
         function createStar(id) {
             const star = document.createElement('div');
             star.classList.add('star');
-            
             const sizeType = Math.random();
             let sizeClass, starSize;
-            
-            if (sizeType < 0.6) {
-                sizeClass = 'star-small';
-                starSize = 1;
-            } else if (sizeType < 0.9) {
-                sizeClass = 'star-medium';
-                starSize = 2;
-            } else {
-                sizeClass = 'star-large';
-                starSize = 3;
-            }
-            
+            if (sizeType < 0.6) { sizeClass = 'star-small'; starSize = 1; }
+            else if (sizeType < 0.9) { sizeClass = 'star-medium'; starSize = 2; }
+            else { sizeClass = 'star-large'; starSize = 3; }
             star.classList.add(sizeClass);
-            
             const colorIndex = Math.floor(Math.random() * starColors.length);
             star.style.backgroundColor = starColors[colorIndex];
-            
             const glowIntensity = 0.5 + Math.random() * 0.5;
             star.style.boxShadow = `0 0 ${starSize * 3}px ${starSize}px rgba(255, 255, 255, ${glowIntensity * 0.4})`;
-            
             let startX, startY;
             const side = Math.random();
-            
-            if (side < 0.6) {
-                startX = Math.random() * window.innerWidth;
-                startY = -10;
-            } else if (side < 0.8) {
-                startX = -10;
-                startY = Math.random() * window.innerHeight * 0.7;
-            } else {
-                startX = window.innerWidth + 10;
-                startY = Math.random() * window.innerHeight * 0.7;
-            }
-            
+            if (side < 0.6) { startX = Math.random() * window.innerWidth; startY = -10; }
+            else if (side < 0.8) { startX = -10; startY = Math.random() * window.innerHeight * 0.7; }
+            else { startX = window.innerWidth + 10; startY = Math.random() * window.innerHeight * 0.7; }
             star.style.left = `${startX}px`;
             star.style.top = `${startY}px`;
-            
             starsContainer.appendChild(star);
-            stars.push({
-                element: star,
-                id: id,
-                active: true,
-                size: starSize,
-                startX: startX,
-                startY: startY
-            });
-            
+            stars.push({ element: star, id: id, active: true, size: starSize, startX: startX, startY: startY });
             animateStar(star, id);
         }
         
-        // Анимация звезды
         function animateStar(star, id) {
             const starData = stars.find(s => s.id === id);
             if (!starData) return;
-            
             star.style.opacity = '0';
             star.style.transform = 'translate(0, 0)';
-            
             const delay = Math.random() * 3;
-            
             const startX = starData.startX;
             const startY = starData.startY;
-            
             const dx = centerX - startX;
             const dy = centerY - startY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            
             const dirX = dx / distance;
             const dirY = dy / distance;
-            
             const angleRad = (65 * Math.PI) / 180;
             const rotatedX = dirX * Math.cos(angleRad) - dirY * Math.sin(angleRad);
             const rotatedY = dirX * Math.sin(angleRad) + dirY * Math.cos(angleRad);
-            
             const duration = (2 + Math.random() * 2) * (1 / (starData.size * 0.5));
-            
             let startTime = null;
-            
             function animate(currentTime) {
                 if (!startTime) startTime = currentTime;
                 const elapsed = currentTime - startTime;
-                
-                if (elapsed < delay * 1000) {
-                    requestAnimationFrame(animate);
-                    return;
-                }
-                
+                if (elapsed < delay * 1000) { requestAnimationFrame(animate); return; }
                 const animationTime = elapsed - (delay * 1000);
                 const progress = Math.min(animationTime / (duration * 1000), 1);
                 const easeProgress = progress * progress;
-                
                 const moveDistance = distance * 1.5 * easeProgress;
                 const newX = startX + rotatedX * moveDistance;
                 const newY = startY + rotatedY * moveDistance;
-                
                 let opacity;
-                if (progress < 0.2) {
-                    opacity = progress / 0.2;
-                } else if (progress > 0.7) {
-                    opacity = (1 - progress) / 0.3;
-                } else {
-                    opacity = 1;
-                }
-                
+                if (progress < 0.2) opacity = progress / 0.2;
+                else if (progress > 0.7) opacity = (1 - progress) / 0.3;
+                else opacity = 1;
                 const glowIntensity = 0.3 + 0.7 * Math.sin(progress * Math.PI);
-                
                 star.style.opacity = opacity.toString();
                 star.style.transform = `translate(${newX - startX}px, ${newY - startY}px)`;
                 star.style.boxShadow = `0 0 ${starData.size * 3 * glowIntensity}px ${starData.size * glowIntensity}px rgba(255, 255, 255, ${0.2 + glowIntensity * 0.3})`;
-                
-                if (progress < 1 && animationActive) {
-                    requestAnimationFrame(animate);
-                } else if (animationActive) {
-                    resetStar(star, id);
-                }
+                if (progress < 1 && animationActive) requestAnimationFrame(animate);
+                else if (animationActive) resetStar(star, id);
             }
-            
             requestAnimationFrame(animate);
         }
         
-        // Сброс звезды
         function resetStar(star, id) {
             const starData = stars.find(s => s.id === id);
             if (!starData) return;
-            
             const delay = 0.5 + Math.random() * 2;
-            
             let newStartX, newStartY;
             const side = Math.random();
-            
-            if (side < 0.6) {
-                newStartX = Math.random() * window.innerWidth;
-                newStartY = -10;
-            } else if (side < 0.8) {
-                newStartX = -10;
-                newStartY = Math.random() * window.innerHeight * 0.7;
-            } else {
-                newStartX = window.innerWidth + 10;
-                newStartY = Math.random() * window.innerHeight * 0.7;
-            }
-            
+            if (side < 0.6) { newStartX = Math.random() * window.innerWidth; newStartY = -10; }
+            else if (side < 0.8) { newStartX = -10; newStartY = Math.random() * window.innerHeight * 0.7; }
+            else { newStartX = window.innerWidth + 10; newStartY = Math.random() * window.innerHeight * 0.7; }
             star.style.left = `${newStartX}px`;
             star.style.top = `${newStartY}px`;
             starData.startX = newStartX;
             starData.startY = newStartY;
-            
-            setTimeout(() => {
-                if (animationActive) {
-                    animateStar(star, id);
-                }
-            }, delay * 1000);
+            setTimeout(() => { if (animationActive) animateStar(star, id); }, delay * 1000);
         }
         
-        // Переключение вкладок
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabId = tab.getAttribute('data-tab');
-                
-                // Убираем активный класс у всех вкладок
                 tabs.forEach(t => t.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
-                
-                // Добавляем активный класс текущей вкладке
                 tab.classList.add('active');
                 document.getElementById(`${tabId}-content`).classList.add('active');
             });
         });
         
-        // Адаптация к изменению размера окна
         window.addEventListener('resize', () => {
             centerX = window.innerWidth / 2;
             centerY = window.innerHeight * 0.4;
-            
             if (animationActive) {
                 animationActive = false;
-                setTimeout(() => {
-                    initStars();
-                    animationActive = true;
-                }, 100);
+                setTimeout(() => { initStars(); animationActive = true; }, 100);
             }
         });
         
-        // Инициализация
         window.addEventListener('load', () => {
             initStars();
             preloadImage();
-            
-            // Анимация появления текста
             setTimeout(() => {
                 document.querySelector('.order-name').style.animation = 'revealText 1.5s ease forwards';
                 document.querySelector('.order-description').style.animation = 'revealText 1.5s ease forwards 0.5s';
